@@ -2,8 +2,21 @@ node_modules/
 .next/
 out/
 build/
-.env
-.env.local
 *.tsbuildinfo
 next-env.d.ts
 .DS_Store
+
+# ── Secrets ───────────────────────────────────────────────────────
+# Patterns are deliberately loose about the leading dot and the extension,
+# following the convention in BPX_RMA: a rule that only matches when the
+# filename is typed perfectly is not protection. This repo is on GitHub, so
+# a near-miss here is a published credential.
+.env
+.env.*
+!.env.example
+*railway-token*
+*anthropic-key*
+*token*.txt
+*api-key*
+*apikey*
+*.pem
