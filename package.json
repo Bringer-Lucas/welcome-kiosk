@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "description": "Visitor check-in kiosk, badge printing and evacuation roll-call. Replaces Greetly.",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
