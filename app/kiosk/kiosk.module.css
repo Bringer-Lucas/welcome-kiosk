@@ -1,0 +1,293 @@
+/* Sized for an iPad in Guided Access at arm's length: large targets, generous
+   type, nothing that depends on hover or precise pointing. */
+
+.shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #f6f7f9;
+  color: #16181d;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min(56rem, 100%);
+  margin: 0 auto;
+  padding: 2rem 1.5rem 0;
+}
+
+.footer {
+  width: min(56rem, 100%);
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.title {
+  font-size: clamp(1.9rem, 4vw, 2.9rem);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.15rem;
+  color: #5c6270;
+  margin: 0 0 2rem;
+}
+
+/* --- buttons --- */
+
+.button {
+  flex: 1;
+  min-height: 4.25rem;
+  padding: 0 2rem;
+  border: none;
+  border-radius: 0.9rem;
+  font: inherit;
+  font-size: 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.06s ease, background-color 0.15s ease;
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.primary {
+  background: #1f4fd8;
+  color: #fff;
+}
+
+.secondary {
+  background: #e4e6eb;
+  color: #16181d;
+}
+
+.ghost {
+  flex: 0 0 auto;
+  background: none;
+  color: #5c6270;
+  min-height: 3rem;
+  font-size: 1rem;
+  padding: 0 1rem;
+}
+
+.startButton {
+  min-height: 6rem;
+  font-size: 1.6rem;
+}
+
+/* --- form fields --- */
+
+.field {
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 550;
+  margin-bottom: 0.6rem;
+}
+
+.optional {
+  font-weight: 400;
+  color: #8a909e;
+}
+
+.input {
+  width: 100%;
+  min-height: 4rem;
+  padding: 0 1.2rem;
+  border: 2px solid #d6d9e0;
+  border-radius: 0.9rem;
+  background: #fff;
+  font: inherit;
+  /* Under 16px iOS Safari zooms the whole page on focus and the kiosk layout
+     never recovers. */
+  font-size: 1.25rem;
+  color: inherit;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #1f4fd8;
+}
+
+/* --- host picker --- */
+
+.hostGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 0.9rem;
+  max-height: 26rem;
+  overflow-y: auto;
+  padding: 0.25rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hostCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 1.1rem 0.75rem;
+  border: 2px solid transparent;
+  border-radius: 1rem;
+  background: #fff;
+  font: inherit;
+  color: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.hostCardSelected {
+  border-color: #1f4fd8;
+  background: #eef2fe;
+}
+
+.hostAvatar {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #d6d9e0;
+}
+
+.hostInitials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.hostName {
+  font-size: 1rem;
+  font-weight: 550;
+  line-height: 1.25;
+}
+
+.hostTitle {
+  font-size: 0.85rem;
+  color: #6b7180;
+  line-height: 1.25;
+}
+
+.empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #6b7180;
+  font-size: 1.1rem;
+}
+
+/* --- camera --- */
+
+.cameraFrame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  max-height: 26rem;
+  margin: 0 auto;
+  border-radius: 1.1rem;
+  overflow: hidden;
+  background: #16181d;
+}
+
+.video,
+.captured {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* The front camera is a mirror to the person standing in front of it; an
+   unmirrored preview makes people lean the wrong way. The captured still is
+   left unmirrored so the badge shows them the right way round. */
+.video {
+  transform: scaleX(-1);
+}
+
+.cameraMessage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: #c9ccd4;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+/* --- status --- */
+
+.notice {
+  padding: 1rem 1.2rem;
+  border-radius: 0.8rem;
+  background: #fdeaea;
+  color: #8f1d1d;
+  font-size: 1.05rem;
+  margin-bottom: 1.5rem;
+}
+
+.doneIcon {
+  font-size: 4rem;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.summary {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: #fff;
+  font-size: 1.15rem;
+  margin-bottom: 2rem;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.summaryLabel {
+  color: #6b7180;
+}
+
+.summaryValue {
+  font-weight: 550;
+  text-align: right;
+}
+
+.privacy {
+  font-size: 0.9rem;
+  color: #8a909e;
+  text-align: center;
+  padding: 0 1.5rem 1.5rem;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+}
