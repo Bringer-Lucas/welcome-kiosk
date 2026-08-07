@@ -36,36 +36,53 @@ npm run dev         # kiosk at /kiosk
 The camera needs HTTPS or `localhost` — over plain `http://` to an IP address,
 iOS Safari won't expose it and the kiosk will offer to continue without a photo.
 
+## ⚠ Railway is deployed but not working
+
+The build fails and **we never found out why** — three fixes were made by
+inference, none confirmed against a real error log. Details in
+[01-conversation-log.md](01-conversation-log.md).
+
+**Do this before changing any more code:** get the build log. Dashboard →
+welcome-kiosk → the app service → Deployments → the red one → **Build Logs**.
+
+The domain is fine — `bringer-welcome.up.railway.app` resolves with valid TLS.
+The 404 is Railway's edge router saying nothing is deployed behind it, not a
+problem with our app or the domain. Don't re-debug that part.
+
+To let Claude read the logs directly, create an **account-level** API token
+(avatar → Account Settings → Tokens — *not* service variables, which are a
+different thing) and save it to `.railway-token` in the repo root. Already
+gitignored and verified.
+
 ## ▶ Resume here
 
-Next session starts at **step 3, badge PDF rendering**.
+Two independent threads. **Step 3 does not depend on Railway** — if the deploy
+is still stuck, build the badge renderer anyway.
 
 Prompt to paste when resuming:
 
 > Read the `Notes/` directory to pick up where we left off. Steps 1 and 2 are
-> done — schema, project skeleton and the kiosk check-in flow all work. Start on
-> step 3 of the build order, badge PDF rendering with PDFKit at 62 × 100 mm for
-> the DK-1202 labels. Keep the Microsoft Graph directory sync and the Power
-> Automate notification webhook stubbed so nothing blocks on IT. Keep updating
-> `Notes/` as we go.
+> done — schema, project skeleton and the kiosk check-in flow all work locally
+> and are pushed to GitHub. Two things to pick up:
+>
+> 1. The Railway build is failing and we never confirmed why. I'll get you the
+>    build log — work from the actual error, not from guesses. Don't stack more
+>    speculative fixes on the unconfirmed ones already pushed.
+> 2. Start step 3 of the build order: badge PDF rendering with PDFKit at
+>    62 × 100 mm for the DK-1202 labels, rendered from a real visit record.
+>
+> Keep the Microsoft Graph directory sync and the Power Automate notification
+> webhook stubbed so nothing blocks on IT. Keep updating `Notes/` as we go.
 
-### One thing needing you, not code
+### Also outstanding
 
-The Railway project doesn't exist yet — the CLI session expired, and creating
-the project spends money, so it wants a human. When you're ready:
-
-```
-railway login
-railway init            # in the repo root
-railway add             # add a Postgres service — this injects DATABASE_URL
-railway up
-```
-
-`railway.json` already runs migrations on deploy, so the schema applies itself.
-Step 2 doesn't depend on any of this — it can be built and run locally first.
-
-Also worth checking whether IT has moved on the two blockers below — but neither
-stops step 2.
+- **Production has no employees.** The schema deploys itself, but `npm run seed`
+  has only ever run locally, so the host picker will be empty until it's run
+  against the Railway database. Real data comes from the Graph sync in step 6.
+- **The camera can only be tested on the deployed HTTPS URL**, on the real iPad.
+  iOS Safari won't expose `getUserMedia` otherwise. This is the main reason the
+  deploy matters now rather than later.
+- Check whether IT has moved on the two blockers below — neither stops step 3.
 
 ## Files
 

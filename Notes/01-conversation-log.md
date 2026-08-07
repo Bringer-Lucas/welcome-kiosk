@@ -262,3 +262,92 @@ badge printing. The kiosk queues print jobs that nothing consumes yet.
 **Status:** step 2 done. Next is step 3, badge PDF rendering.
 
 ---
+
+## 2026-08-07 — Session 4 continued: first Railway deploy, still failing
+
+**The app is on GitHub and deployed to Railway, but the Railway build fails and
+we never established why.** No code problem is known — this is entirely a
+deployment issue.
+
+### Where it actually stands
+
+| | |
+|---|---|
+| GitHub | ✅ [Bringer-Lucas/welcome-kiosk](https://github.com/Bringer-Lucas/welcome-kiosk), 3 commits on `main` |
+| Railway project | ✅ created |
+| Public domain | ✅ `bringer-welcome.up.railway.app` — DNS and TLS both verified working |
+| Build | ❌ **failing** — cause unconfirmed |
+| Anything served | ❌ nothing |
+| Production seed data | ❌ never run |
+
+### What the 404 actually means
+
+`https://bringer-welcome.up.railway.app/api/health` returns:
+
+```
+HTTP 404   Server: railway-hikari   x-railway-fallback: true
+{"status":"error","code":404,"message":"Application not found"}
+```
+
+That is **Railway's edge router**, not our app — ours would return a Next.js
+HTML 404. So the domain is wired up correctly and there is simply no running
+deployment behind it. Don't re-debug the domain next session; it's fine.
+
+Two candidates remain: no deployment has ever succeeded (most likely, given the
+build fails), or the public domain was generated on the Postgres service rather
+than the app service.
+
+### Fix pushed, but never confirmed
+
+Nothing declared a Node version, so Nixpacks would fall back to Node 18 while
+Next 16 requires ≥ 20.9. Added `engines.node: ">=22"` and `.nvmrc`. Also stopped
+using `import.meta.dirname` in `next.config.ts` (needs Node 20.11+, and is
+`undefined` rather than an error on older versions, so it fails somewhere
+misleading).
+
+**This is a real defect and worth having fixed, but it was never confirmed to be
+the failure Lucas hit.** Treat it as unverified.
+
+Verified separately: a clean-room `npm ci` + `npm run build` from only the
+git-tracked files, with no `DATABASE_URL`, passes on Node 24. **The code builds
+fine.** Whatever is failing is environmental.
+
+### Still-unexplored cause, if the Node fix wasn't it
+
+If Railway sets `NODE_ENV=production` during install, `npm ci` skips
+devDependencies — and `typescript` plus every `@types/*` package lives there, so
+`next build` would fail on missing TypeScript. Fix would be
+`NPM_CONFIG_PRODUCTION=false` as a service variable, or moving those packages
+into `dependencies`. **Deliberately not applied** — we'd be stacking a second
+guess on an unconfirmed first one.
+
+### Two things that cost time, worth not repeating
+
+- **`*.railway.internal` is the private network domain.** Lucas set the URL to
+  `bringer-welcome.railway.internal` first. It's IPv6-only, has no TLS, and is
+  reachable only from other services inside the same Railway project — the iPad
+  can't use it. It's the right address for app↔Postgres, wrong for anything a
+  browser loads. The public domain is the `*.up.railway.app` one.
+- **Railway CLI auth is expired machine-wide** (`invalid_grant`), and
+  `railway login` — including `--browserless` — **cannot run in this shell**;
+  it refuses in non-interactive mode. So logs could not be pulled directly.
+  BPX_RMA works because it has a `.railway-token` file (36-char project token),
+  not because its login is good.
+
+### Also done this session
+
+`.gitignore` hardened before any secret existed, copying the loose-pattern
+convention from BPX_RMA (`*railway-token*`, `*token*.txt`, `.env.*`, …). Rules
+were tested, not assumed: `git check-ignore` confirms both `.railway-token` and
+a sloppily-named variant are ignored. This repo is public-facing, so a near-miss
+here would be a published credential.
+
+### Note for whoever picks this up
+
+Three consecutive fixes were made by inference rather than from the actual error
+log, and none is confirmed. **Get the build log before changing anything else.**
+
+**Status:** steps 1–2 done and pushed. Step 3 not started. Railway blocked on
+one piece of information.
+
+---
